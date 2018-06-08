@@ -3,34 +3,18 @@ package com.lzg.calc;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class Calculate {
+import static com.lzg.calc.Constant.MAX_TOKEN_SIZE;
 
-    public static final int MAX_TOKEN_SIZE = 100;
+public class lexicalanalyzer {
 
     public static byte[] st_line;
     public static int st_line_pos = 0;
-
-    enum TokenKind {
-        BAD_TOKEN,
-        NUMBER_TOKEN,
-        ADD_OPERATOR_TOKEN,
-        SUB_OPERATOR_TOKEN,
-        MUL_OPERATOR_TOKEN,
-        DIV_OPERATOR_TOKEN,
-        END_OF_LINE_TOKEN,
-    }
 
     enum LexerStatus {
         INITIAL_STATUS,
         IN_INT_PART_STATUS,
         DOT_STATUS,
         IN_FRAC_PART_STATUS,
-    }
-
-    class Token {
-        TokenKind kind;
-        double value;
-        byte[] str = new byte[MAX_TOKEN_SIZE];
     }
 
     void set_line(byte[] line) {
@@ -124,13 +108,13 @@ public class Calculate {
     }
 
     public static void main(String[] args) throws Exception {
-        Calculate calculate = new Calculate();
+        lexicalanalyzer lexicalanalyzer = new lexicalanalyzer();
 
         char[] buf = new char[1024];
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         while (br.read(buf) > 0) {
-            calculate.parse_line(new String(buf).getBytes());
+            lexicalanalyzer.parse_line(new String(buf).getBytes());
         }
     }
 

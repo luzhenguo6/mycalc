@@ -1,0 +1,11 @@
+package com.lzg.calc;
+
+enum TokenKind {
+    BAD_TOKEN,
+    NUMBER_TOKEN,
+    ADD_OPERATOR_TOKEN,
+    SUB_OPERATOR_TOKEN,
+    MUL_OPERATOR_TOKEN,
+    DIV_OPERATOR_TOKEN,
+    END_OF_LINE_TOKEN,
+}
