@@ -26,9 +26,26 @@ public class Parser {
     }
 
     static double parse_primary_expression() {
-        Token token = my_get_token();
+        Token token;
+        double value;
+        int minus_flag = 1;
+        token = my_get_token();
+        if (TokenKind.SUB_OPERATOR_TOKEN.equals(token.getKind())) {
+            minus_flag = -1;
+        } else {
+            unget_token(token);
+        }
+        token = my_get_token();
         if (TokenKind.NUMBER_TOKEN.equals(token.getKind())) {
-            return token.getValue();
+            return token.getValue()*minus_flag;
+        } else if (TokenKind.LEFT_PAREN_TOKEN.equals(token.getKind())) {
+            value = parse_expression();
+            token = my_get_token();
+            if (!TokenKind.RIGHT_PAREN_TOKEN.equals(token.getKind())) {
+                System.err.println("missing ')' error.");
+                return 0.0;
+            }
+            return value*minus_flag;
         }
         System.err.println("syntax error.");
         return 0.0;

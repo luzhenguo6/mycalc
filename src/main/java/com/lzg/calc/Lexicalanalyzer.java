@@ -69,6 +69,12 @@ public class Lexicalanalyzer {
             } else if (current_byte == '/') {
                 token.setKind(TokenKind.DIV_OPERATOR_TOKEN);
                 return;
+            } else if (current_byte == '(') {
+                token.setKind(TokenKind.LEFT_PAREN_TOKEN);
+                return;
+            } else if (current_byte == ')') {
+                token.setKind(TokenKind.RIGHT_PAREN_TOKEN);
+                return;
             } else if (Character.isDigit(current_byte)) {
                 if (status == LexerStatus.INITIAL_STATUS) {
                     status = LexerStatus.IN_INT_PART_STATUS;
