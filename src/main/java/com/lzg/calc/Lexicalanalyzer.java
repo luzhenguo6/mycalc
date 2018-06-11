@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 
 import static com.lzg.calc.Constant.MAX_TOKEN_SIZE;
 
-public class lexicalanalyzer {
+public class Lexicalanalyzer {
 
     public static byte[] st_line;
     public static int st_line_pos = 0;
@@ -17,31 +17,31 @@ public class lexicalanalyzer {
         IN_FRAC_PART_STATUS,
     }
 
-    void set_line(byte[] line) {
+    public static void set_line(byte[] line) {
         st_line = line;
         st_line_pos = 0;
     }
 
-    void get_token(Token token) {
+    public static void get_token(Token token) {
         int out_pos = 0;
         LexerStatus status = LexerStatus.INITIAL_STATUS;
         byte current_byte;
 
-        token.kind = TokenKind.BAD_TOKEN;
+        token.setKind(TokenKind.BAD_TOKEN);
         while (st_line[st_line_pos] != 0) {
             current_byte = st_line[st_line_pos];
             if ((status == LexerStatus.IN_INT_PART_STATUS
                     || status == LexerStatus.IN_FRAC_PART_STATUS) &&
                     !Character.isDigit(current_byte) && current_byte != '.') {
-                token.kind = TokenKind.NUMBER_TOKEN;
+                token.setKind(TokenKind.NUMBER_TOKEN);
                 try {
-                    token.value = Double.valueOf(new String(token.str));
+                    token.setValue(Double.valueOf(new String(token.getStr())));
                 } catch (Exception e) {
                 }
                 return;
             }
             if (current_byte == '\n') {
-                token.kind = TokenKind.END_OF_LINE_TOKEN;
+                token.setKind(TokenKind.END_OF_LINE_TOKEN);
                 return;
             }
             if (Character.isSpaceChar(current_byte)) {
@@ -52,22 +52,22 @@ public class lexicalanalyzer {
                 System.err.println("token too long.");
                 return;
             }
-            token.str[out_pos] = st_line[st_line_pos];
+            token.getStr()[out_pos] = st_line[st_line_pos];
             st_line_pos++;
             out_pos++;
-            token.str[out_pos] = 0;
+            token.getStr()[out_pos] = 0;
 
             if (current_byte == '+') {
-                token.kind = TokenKind.ADD_OPERATOR_TOKEN;
+                token.setKind(TokenKind.ADD_OPERATOR_TOKEN);
                 return;
             } else if (current_byte == '-') {
-                token.kind = TokenKind.SUB_OPERATOR_TOKEN;
+                token.setKind(TokenKind.SUB_OPERATOR_TOKEN);
                 return;
             } else if (current_byte == '*') {
-                token.kind = TokenKind.MUL_OPERATOR_TOKEN;
+                token.setKind(TokenKind.MUL_OPERATOR_TOKEN);
                 return;
             } else if (current_byte == '/') {
-                token.kind = TokenKind.DIV_OPERATOR_TOKEN;
+                token.setKind(TokenKind.DIV_OPERATOR_TOKEN);
                 return;
             } else if (Character.isDigit(current_byte)) {
                 if (status == LexerStatus.INITIAL_STATUS) {
@@ -90,31 +90,29 @@ public class lexicalanalyzer {
         }
     }
 
-    void parse_line(byte[] buf) {
+    public static void parse_line(byte[] buf) {
         Token token;
         set_line(buf);
         for (;;) {
             token = new Token();
             get_token(token);
-            if (token.kind == TokenKind.END_OF_LINE_TOKEN) {
+            if (TokenKind.END_OF_LINE_TOKEN.equals(token.getKind())) {
                 break;
-            } else if (token.kind == TokenKind.BAD_TOKEN) {
-                System.out.printf("kind..(%s), str..%s\n", token.kind, new String(token.str));
+            } else if (TokenKind.BAD_TOKEN.equals(token.getKind())) {
+                System.out.printf("kind..(%s), str..%s\n", token.getKind(), new String(token.getStr()));
                 break;
             } else {
-                System.out.printf("kind..(%s), str..%s\n", token.kind, new String(token.str));
+                System.out.printf("kind..(%s), str..%s\n", token.getKind(), new String(token.getStr()));
             }
         }
     }
 
     public static void main(String[] args) throws Exception {
-        lexicalanalyzer lexicalanalyzer = new lexicalanalyzer();
-
         char[] buf = new char[1024];
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         while (br.read(buf) > 0) {
-            lexicalanalyzer.parse_line(new String(buf).getBytes());
+            Lexicalanalyzer.parse_line(new String(buf).getBytes());
         }
     }
 
